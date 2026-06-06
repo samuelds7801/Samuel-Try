@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>My Portfolio</title>
+
+  <!-- Gotham fallback font -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Gotham", "Montserrat", Arial, sans-serif;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: #050505;
+      color: #ffffff;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(circle at top left, rgba(255, 0, 0, 0.28), transparent 35%),
+        radial-gradient(circle at bottom right, rgba(170, 0, 0, 0.35), transparent 40%),
+        linear-gradient(135deg, #050505 0%, #130000 50%, #050505 100%);
+      z-index: -2;
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      z-index: -1;
+      opacity: 0.35;
+    }
+
+    header {
+      width: 100%;
+      padding: 24px 8%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(5, 5, 5, 0.78);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(255, 0, 0, 0.25);
+    }
+
+    .logo {
+      font-size: 1.35rem;
+      font-weight: 900;
+      letter-spacing: 1px;
+    }
+
+    .logo span {
+      color: #ff2525;
+    }
+
+    nav {
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    nav button {
+      background: transparent;
+      border: none;
+      color: #f5f5f5;
+      font-size: 0.95rem;
+      cursor: pointer;
+      font-weight: 700;
+      transition: 0.3s;
+    }
+
+    nav button:hover {
+      color: #ff3030;
+    }
+
+    .page {
+      display: none;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    .hero {
+      min-height: calc(100vh - 80px);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      gap: 45px;
+      padding: 80px 8%;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 9px 18px;
+      border: 1px solid rgba(255, 64, 64, 0.55);
+      border-radius: 999px;
+      color: #ff6a6a;
+      background: rgba(255, 0, 0, 0.08);
+      margin-bottom: 24px;
+      font-size: 0.88rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.8rem, 7vw, 6rem);
+      line-height: 0.95;
+      margin-bottom: 24px;
+      text-transform: uppercase;
+    }
+
+    .hero h1 span {
+      background: linear-gradient(90deg, #ffffff, #ff1f1f, #750000);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .hero p {
+      max-width: 680px;
+      color: #d0d0d0;
+      font-size: 1.05rem;
+      line-height: 1.7;
+      margin-bottom: 34px;
+    }
+
+    .hero-buttons {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 14px 24px;
+      border-radius: 999px;
+      text-decoration: none;
+      font-weight: 800;
+      transition: 0.3s;
+      border: none;
+      cursor: pointer;
+      font-size: 0.95rem;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #ff2020, #7c0000);
+      color: white;
+      box-shadow: 0 0 30px rgba(255, 0, 0, 0.35);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 0 45px rgba(255, 0, 0, 0.55);
+    }
+
+    .btn-outline {
+      color: white;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .btn-outline:hover {
+      border-color: #ff2c2c;
+      color: #ff5050;
+      transform: translateY(-3px);
+    }
+
+    .hero-preview {
+      width: 100%;
+      height: 520px;
+      border-radius: 32px;
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.055);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 25px 80px rgba(0, 0, 0, 0.55);
+      position: relative;
+    }
+
+    .hero-preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      animation: fadeImage 1s ease-in-out;
+      filter: brightness(0.9);
+    }
+
+    .hero-preview::after {
+      content: "Design Preview";
+      position: absolute;
+      left: 22px;
+      bottom: 22px;
+      padding: 10px 16px;
+      border-radius: 999px;
+      background: rgba(0, 0, 0, 0.65);
+      border: 1px solid rgba(255, 0, 0, 0.45);
+      color: #ffb1b1;
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+
+    @keyframes fadeImage {
+      from {
+        opacity: 0.2;
+        transform: scale(1.04);
+      }
+
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    section {
+      padding: 90px 8%;
+    }
+
+    .section-title {
+      text-align: center;
+      margin-bottom: 50px;
+    }
+
+    .section-title h2 {
+      font-size: clamp(2rem, 4vw, 3.5rem);
+      margin-bottom: 12px;
+      text-transform: uppercase;
+    }
+
+    .section-title h2 span {
+      color: #ff2525;
+    }
+
+    .section-title p {
+      color: #bdbdbd;
+      max-width: 650px;
+      margin: auto;
+      line-height: 1.6;
+    }
+
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 22px;
+    }
+
+    .work-card {
+      position: relative;
+      min-height: 310px;
+      border-radius: 26px;
+      overflow: hidden;
+      background: #111;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 18px 60px rgba(0, 0, 0, 0.45);
+      cursor: pointer;
+    }
+
+    .work-card img,
+    .work-card video {
+      width: 100%;
+      height: 100%;
+      min-height: 310px;
+      object-fit: cover;
+      display: block;
+      transition: 0.45s ease;
+      filter: brightness(0.78);
+    }
+
+    .work-card:hover img,
+    .work-card:hover video {
+      transform: scale(1.08);
+      filter: brightness(0.45);
+    }
+
+    .work-info {
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      padding: 28px;
+      background: linear-gradient(transparent, rgba(0, 0, 0, 0.95));
+      transform: translateY(20px);
+      opacity: 0;
+      transition: 0.35s;
+    }
+
+    .work-card:hover .work-info {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .work-info h3 {
+      font-size: 1.25rem;
+      margin-bottom: 8px;
+    }
+
+    .work-info p {
+      color: #d0d0d0;
+      line-height: 1.5;
+      font-size: 0.9rem;
+    }
+
+    .video-label {
+      position: absolute;
+      top: 18px;
+      right: 18px;
+      padding: 8px 13px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      color: #ffffff;
+      background: rgba(255, 0, 0, 0.75);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      z-index: 2;
+    }
+
+    .empty-message {
+      grid-column: 1 / -1;
+      text-align: center;
+      color: #ffb1b1;
+      font-size: 1rem;
+      line-height: 1.7;
+      padding: 40px;
+      border-radius: 24px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.92);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 999;
+      padding: 30px;
+    }
+
+    .lightbox.active {
+      display: flex;
+    }
+
+    .lightbox img,
+    .lightbox video {
+      max-width: 95%;
+      max-height: 88vh;
+      border-radius: 18px;
+      box-shadow: 0 0 60px rgba(255, 0, 0, 0.35);
+    }
+
+    .close-lightbox {
+      position: absolute;
+      top: 28px;
+      right: 36px;
+      font-size: 2.5rem;
+      color: white;
+      cursor: pointer;
+      z-index: 1000;
+    }
+
+    footer {
+      padding: 28px 8%;
+      text-align: center;
+      color: #a9a9a9;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    @media (max-width: 1100px) {
+      .gallery {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .hero {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-preview {
+        height: 430px;
+      }
+    }
+
+    @media (max-width: 800px) {
+      header {
+        padding: 20px 6%;
+        flex-direction: column;
+        gap: 14px;
+      }
+
+      section {
+        padding: 70px 6%;
+      }
+
+      .hero {
+        padding: 60px 6%;
+      }
+
+      .gallery {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 550px) {
+      nav {
+        justify-content: center;
+      }
+
+      .gallery {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-preview {
+        height: 330px;
+      }
+
+      .work-card,
+      .work-card img,
+      .work-card video {
+        min-height: 280px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <div class="logo">MY<span>PORTFOLIO</span></div>
+
+    <nav>
+      <button onclick="showPage('homePage')">Home</button>
+      <button onclick="showPage('designPage')">Design</button>
+      <button onclick="showPage('videoPage')">Videos</button>
+    </nav>
+  </header>
+
+  <main>
+
+    <!-- HOME PAGE -->
+    <div id="homePage" class="page active">
+      <div class="hero">
+        <div class="hero-content">
+          <div class="badge">Personal Creative Portfolio</div>
+
+          <h1>Creative <span>Work Gallery</span></h1>
+
+          <p>
+            Welcome to my personal portfolio. This website showcases my designs and video works
+            in a clean red and black visual style.
+          </p>
+
+          <div class="hero-buttons">
+            <button class="btn btn-primary" onclick="showPage('designPage')">View Designs</button>
+            <button class="btn btn-outline" onclick="showPage('videoPage')">View Videos</button>
+          </div>
+        </div>
+
+        <div class="hero-preview">
+          <img id="slideshowImage" src="" alt="Design Preview">
+        </div>
+      </div>
+    </div>
+
+    <!-- DESIGN PAGE -->
+    <div id="designPage" class="page">
+      <section>
+        <div class="section-title">
+          <h2>Design <span>Works</span></h2>
+          <p>
+            All uploaded design images from the images folder will automatically appear here.
+          </p>
+        </div>
+
+        <div id="designGallery" class="gallery"></div>
+      </section>
+    </div>
+
+    <!-- VIDEO PAGE -->
+    <div id="videoPage" class="page">
+      <section>
+        <div class="section-title">
+          <h2>Video <span>Works</span></h2>
+          <p>
+            All uploaded videos from the videos folder will automatically appear here.
+          </p>
+        </div>
+
+        <div id="videoGallery" class="gallery"></div>
+      </section>
+    </div>
+
+  </main>
+
+  <footer>
+    <p>© 2026 My Portfolio. All Rights Reserved.</p>
+  </footer>
+
+  <!-- LIGHTBOX -->
+  <div class="lightbox" id="lightbox">
+    <span class="close-lightbox" onclick="closeLightbox()">&times;</span>
+    <img id="lightboxImg" src="" alt="Expanded Design">
+    <video id="lightboxVideo" controls autoplay></video>
+  </div>
+
+  <script>
+    /*
+      FOLDER FORMAT:
+
+      index.html
+
+      images/
+        work1.jpg
+        work2.jpg
+        work3.png
+        work4.jpeg
+        work5.webp
+
+      videos/
+        video1.mp4
+        video2.mp4
+        video3.webm
+        video4.mov
+
+      Just keep adding files using the same numbering pattern.
+
+      Example:
+      images/work6.jpg
+      videos/video5.mp4
+    */
+
+    const MAX_FILES_TO_CHECK = 500;
+
+    const imageExtensions = ["jpg", "jpeg", "png", "webp", "gif"];
+    const videoExtensions = ["mp4", "webm", "mov", "ogg"];
+
+    let designFiles = [];
+    let videoFiles = [];
+    let currentSlide = 0;
+    let slideshowTimer = null;
+
+    const designGallery = document.getElementById("designGallery");
+    const videoGallery = document.getElementById("videoGallery");
+
+    const lightbox = document.getElementById("lightbox");
+    const lightboxImg = document.getElementById("lightboxImg");
+    const lightboxVideo = document.getElementById("lightboxVideo");
+
+    function showPage(pageId) {
+      const pages = document.querySelectorAll(".page");
+
+      pages.forEach(page => {
+        page.classList.remove("active");
+      });
+
+      document.getElementById(pageId).classList.add("active");
+
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+    }
+
+    function imageExists(path) {
+      return new Promise(resolve => {
+        const img = new Image();
+
+        img.onload = () => resolve(true);
+        img.onerror = () => resolve(false);
+
+        img.src = path;
+      });
+    }
+
+    function videoExists(path) {
+      return new Promise(resolve => {
+        const video = document.createElement("video");
+
+        video.onloadedmetadata = () => resolve(true);
+        video.onerror = () => resolve(false);
+
+        video.src = path;
+      });
+    }
+
+    async function loadDesigns() {
+      designFiles = [];
+
+      for (let i = 1; i <= MAX_FILES_TO_CHECK; i++) {
+        for (let ext of imageExtensions) {
+          const path = `images/work${i}.${ext}`;
+          const exists = await imageExists(path);
+
+          if (exists) {
+            designFiles.push(path);
+            break;
+          }
+        }
+      }
+
+      displayDesigns();
+      startSlideshow();
+    }
+
+    async function loadVideos() {
+      videoFiles = [];
+
+      for (let i = 1; i <= MAX_FILES_TO_CHECK; i++) {
+        for (let ext of videoExtensions) {
+          const path = `videos/video${i}.${ext}`;
+          const exists = await videoExists(path);
+
+          if (exists) {
+            videoFiles.push(path);
+            break;
+          }
+        }
+      }
+
+      displayVideos();
+    }
+
+    function displayDesigns() {
+      designGallery.innerHTML = "";
+
+      if (designFiles.length === 0) {
+        designGallery.innerHTML = `
+          <div class="empty-message">
+            No design images found.<br>
+            Add files like <strong>images/work1.jpg</strong>, <strong>images/work2.jpg</strong>, and so on.
+          </div>
+        `;
+        return;
+      }
+
+      designFiles.forEach((file, index) => {
+        const card = document.createElement("div");
+        card.className = "work-card";
+
+        card.innerHTML = `
+          <img src="${file}" alt="Design Work ${index + 1}">
+          <div class="work-info">
+            <h3>Design Work ${index + 1}</h3>
+            <p>${file}</p>
+          </div>
+        `;
+
+        card.addEventListener("click", () => {
+          openImageLightbox(file);
+        });
+
+        designGallery.appendChild(card);
+      });
+    }
+
+    function displayVideos() {
+      videoGallery.innerHTML = "";
+
+      if (videoFiles.length === 0) {
+        videoGallery.innerHTML = `
+          <div class="empty-message">
+            No videos found.<br>
+            Add files like <strong>videos/video1.mp4</strong>, <strong>videos/video2.mp4</strong>, and so on.
+          </div>
+        `;
+        return;
+      }
+
+      videoFiles.forEach((file, index) => {
+        const card = document.createElement("div");
+        card.className = "work-card";
+
+        card.innerHTML = `
+          <span class="video-label">VIDEO</span>
+          <video autoplay muted loop playsinline>
+            <source src="${file}">
+            Your browser does not support the video tag.
+          </video>
+          <div class="work-info">
+            <h3>Video Work ${index + 1}</h3>
+            <p>${file}</p>
+          </div>
+        `;
+
+        card.addEventListener("click", () => {
+          openVideoLightbox(file);
+        });
+
+        videoGallery.appendChild(card);
+      });
+    }
+
+    function startSlideshow() {
+      const slideshowImage = document.getElementById("slideshowImage");
+
+      if (designFiles.length === 0) {
+        slideshowImage.style.display = "none";
+        return;
+      }
+
+      slideshowImage.style.display = "block";
+      slideshowImage.src = designFiles[0];
+
+      if (slideshowTimer) {
+        clearInterval(slideshowTimer);
+      }
+
+      slideshowTimer = setInterval(() => {
+        currentSlide++;
+
+        if (currentSlide >= designFiles.length) {
+          currentSlide = 0;
+        }
+
+        slideshowImage.style.animation = "none";
+        void slideshowImage.offsetWidth;
+        slideshowImage.style.animation = "fadeImage 1s ease-in-out";
+
+        slideshowImage.src = designFiles[currentSlide];
+      }, 3000);
+    }
+
+    function openImageLightbox(src) {
+      lightboxImg.style.display = "block";
+      lightboxVideo.style.display = "none";
+
+      lightboxImg.src = src;
+      lightboxVideo.pause();
+      lightboxVideo.src = "";
+
+      lightbox.classList.add("active");
+    }
+
+    function openVideoLightbox(src) {
+      lightboxImg.style.display = "none";
+      lightboxVideo.style.display = "block";
+
+      lightboxImg.src = "";
+      lightboxVideo.src = src;
+      lightboxVideo.play();
+
+      lightbox.classList.add("active");
+    }
+
+    function closeLightbox() {
+      lightbox.classList.remove("active");
+
+      lightboxImg.src = "";
+      lightboxVideo.pause();
+      lightboxVideo.src = "";
+    }
+
+    lightbox.addEventListener("click", function(event) {
+      if (event.target === lightbox) {
+        closeLightbox();
+      }
+    });
+
+    loadDesigns();
+    loadVideos();
+  </script>
+
+</body>
+</html>
